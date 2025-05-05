@@ -1,23 +1,49 @@
 import sys
 
-# Проверяем количество аргументов командной строки
-if len(sys.argv) != 3:
-    print("Usage: python task1.py n m")
-    sys.exit(1)
+# Функция для построения пути по круговому массиву
+# n — размер массива, m — длина интервала
+# Возвращает строку с последовательностью начальных элементов интервалов
 
-# Считываем значения n и m из аргументов
-n = int(sys.argv[1])
-m = int(sys.argv[2])
+def circular_path(n, m):
+    arr = list(range(1, n+1))  # Формируем массив от 1 до n
+    path = []
+    current = 0  # Начинаем с первого элемента (индекс 0)
+    
+    while True:
+        # Добавляем текущий начальный элемент в путь
+        path.append(str(arr[current]))
+        
+        # Вычисляем индекс следующего начального элемента по кругу
+        current = (current + m - 1) % n
+        
+        # Если вернулись к первому элементу — завершаем цикл
+        if current == 0:
+            break
+    
+    return ''.join(path)
 
-path = []           # Список для хранения пути
-visited = set()     # Множество для отслеживания посещённых индексов
-current = 0         # Текущий индекс (0-based, то есть первый элемент — 0)
+# Главная функция программы
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: python program.py n m")
+        return
+    
+    try:
+        n = int(sys.argv[1])
+        m = int(sys.argv[2])
+        
+        # Проверяем, что n и m — положительные целые числа
+        if n < 1 or m < 1:
+            print("Error: n and m must be positive integers")
+            return
+        
+        result = circular_path(n, m)
+        print(result)
+        
+    except ValueError:
+        print("Error: n and m must be integers")
+    except Exception as e:
+        print(f"Error: {str(e)}")
 
-# Двигаемся по круговому массиву, пока не вернёмся к уже посещённому элементу
-while current not in visited:
-    path.append(str(current + 1))  # Добавляем номер элемента (1-based)
-    visited.add(current)           # Отмечаем индекс как посещённый
-    current = (current + m) % n    # Переходим к следующему элементу по кругу
-
-# Выводим путь в виде строки без пробелов
-print(''.join(path)) 
+if __name__ == "__main__":
+    main() 
